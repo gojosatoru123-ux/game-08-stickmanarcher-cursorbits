@@ -331,7 +331,7 @@ export const updateGameState = (state: GameState, deltaTime: number): GameState 
       enemy.pos.x <= p.pos.x + p.width
     );
     // Aim at legs/feet for platform enemies, center for others
-    const targetY = newState.player.pos.y + (isOnPlatform ? 50 : 35); 
+    const targetY = newState.player.pos.y + (isOnPlatform ? 50 : 55); 
     const dx = targetX - enemy.pos.x;
     const dy = targetY - (enemy.pos.y + 20); // Relative to bow position
     const distToPlayer = Math.abs(dx);
@@ -392,12 +392,12 @@ export const updateGameState = (state: GameState, deltaTime: number): GameState 
             let finalTargetY = targetY;
             let finalTargetX = targetX;
             
-            if (Math.random() < 0.7) { // 70% chance to intentionally miss
+            if (Math.random() < 0.85) { // 70% chance to intentionally miss
               const missDirection = dx > 0 ? 1 : -1;
               // Randomly aim significantly ahead or behind
               const sideBias = Math.random() > 0.5 ? 1.5 : -1; 
-              finalTargetX += missDirection * (40 + Math.random() * 100) * sideBias;
-              finalTargetY += (Math.random() - 0.5) * 120;
+              finalTargetX += missDirection * (80 + Math.random() * 150) * sideBias;
+              finalTargetY += (Math.random() - 0.5) * 180;
             }
 
             const finalDx = finalTargetX - enemy.pos.x;
@@ -409,7 +409,7 @@ export const updateGameState = (state: GameState, deltaTime: number): GameState 
             for (let i = 0; i < arrowCount; i++) {
               const spread = arrowCount > 1 ? (i - 1) * 0.2 : 0;
               // Increased spread to reduce precision significantly
-              const inaccuracyBase = isOnPlatform ? 0.25 : 0.15;
+              const inaccuracyBase = isOnPlatform ? 0.4 : 0.3;
               const inaccuracy = (Math.random() - 0.5) * inaccuracyBase; 
               const angle = baseAngle + spread + inaccuracy;
               
@@ -456,7 +456,7 @@ export const updateGameState = (state: GameState, deltaTime: number): GameState 
         }
       } else {
         // Advance towards player
-        const speed = (enemy.type === EntityType.ENEMY_SHIELD_SPEARMAN ? 1.2 : 2.2) * newState.difficulty;
+        const speed = (enemy.type === EntityType.ENEMY_SHIELD_SPEARMAN ? 0.8 : 0.9) * newState.difficulty;
         enemy.pos.x += (dx > 0 ? 1 : -1) * speed * dt;
       }
     } else if (enemy.type === EntityType.ENEMY_FLYING_BOMBER) {
