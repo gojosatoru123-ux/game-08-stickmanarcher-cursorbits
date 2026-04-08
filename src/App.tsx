@@ -299,7 +299,7 @@ export default function App() {
             exit={{ opacity: 0 }}
             className="absolute inset-0 bg-white/40 apple-blur flex items-center justify-center z-50"
           >
-            <div className="max-w-md w-[90%] p-6 md:p-12 bg-white apple-shadow rounded-[30px] md:rounded-[40px] text-center flex flex-col items-center gap-6 md:gap-8">
+            <div className="max-w-md w-[90%] p-6 md:p-12 bg-white apple-shadow rounded-[30px] md:rounded-[40px] text-center flex flex-col items-center gap-2 md:gap-8">
               <div className="w-16 h-16 md:w-24 md:h-24 bg-apple-accent/10 rounded-2xl md:rounded-3xl flex items-center justify-center text-apple-accent animate-float">
                 <Target size={32} className="md:w-12 md:h-12" />
               </div>
@@ -308,7 +308,7 @@ export default function App() {
                 <p className="text-xs md:text-base text-gray-500">Stickman Duel: Master the bow.</p>
               </div>
               
-              <div className="w-full space-y-2 md:space-y-4 text-[10px] md:text-sm text-gray-400">
+              <div className="hidden md:block w-full space-y-2 md:space-y-4 text-[10px] md:text-sm text-gray-400">
                 <div className="flex justify-between border-b border-gray-100 pb-1 md:pb-2">
                   <span>Mouse / Touch</span>
                   <span className="text-gray-600">Drag & Release</span>
