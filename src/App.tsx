@@ -25,31 +25,6 @@ export default function App() {
     setState(prev => ({ ...prev, isPaused: !prev.isPaused }));
   };
 
-  const handleShoot = useCallback((angle: number, charge: number) => {
-    if (state.player.isDead || state.isGameOver || state.isPaused) return;
-
-    const arrow: Arrow = {
-      id: Math.random().toString(36).substr(2, 9),
-      pos: { x: state.player.pos.x, y: state.player.pos.y + 20 },
-      vel: {
-        x: Math.cos(angle) * charge * ARROW_SPEED_FACTOR * 2,
-        y: Math.sin(angle) * charge * ARROW_SPEED_FACTOR * 2
-      },
-      angle: angle,
-      ownerId: 'player',
-      isStuck: false,
-      damage: 26
-    };
-
-    setState(prev => ({
-      ...prev,
-      arrows: [...prev.arrows, arrow],
-      player: { ...prev.player, charge: 0 }
-    }));
-
-    if (!isMuted) audioSystem.playShoot();
-  }, [state.player.isDead, state.isGameOver, state.isPaused, isMuted, state.player.pos.x, state.player.pos.y]);
-
   // Game Loop
   const animate = (time: number) => {
     if (lastTimeRef.current !== undefined) {
@@ -148,14 +123,37 @@ export default function App() {
       });
     };
 
-    const handleMouseUp = (e: MouseEvent | TouchEvent) => {
-      if (!isStarted || state.isGameOver || state.isPaused || isPortrait) return;
+    const fireArrow = () => {
+      let shotFired = false;
       setState(prev => {
         if (prev.player.charge > 0) {
-          handleShoot(prev.player.aimAngle, prev.player.charge);
+          shotFired = true;
+          const arrow: Arrow = {
+            id: Math.random().toString(36).substr(2, 9),
+            pos: { x: prev.player.pos.x, y: prev.player.pos.y + 20 },
+            vel: {
+              x: Math.cos(prev.player.aimAngle) * prev.player.charge * ARROW_SPEED_FACTOR * 2,
+              y: Math.sin(prev.player.aimAngle) * prev.player.charge * ARROW_SPEED_FACTOR * 2
+            },
+            angle: prev.player.aimAngle,
+            ownerId: 'player',
+            isStuck: false,
+            damage: 26
+          };
+          return {
+            ...prev,
+            arrows: [...prev.arrows, arrow],
+            player: { ...prev.player, charge: 0 }
+          };
         }
         return prev;
       });
+      if (shotFired && !isMuted) audioSystem.playShoot();
+    };
+
+    const handleMouseUp = (e: MouseEvent | TouchEvent) => {
+      if (!isStarted || state.isGameOver || state.isPaused || isPortrait) return;
+      fireArrow();
     };
 
     // Keyboard Controls
@@ -183,12 +181,7 @@ export default function App() {
 
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.code === 'Space' || e.code === 'Enter') {
-        setState(prev => {
-          if (prev.player.charge > 0) {
-            handleShoot(prev.player.aimAngle, prev.player.charge);
-          }
-          return prev;
-        });
+        fireArrow();
       }
       if (e.code === 'Escape') togglePause();
     };
@@ -212,7 +205,7 @@ export default function App() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [isStarted, state.isGameOver, state.isPaused, isPortrait, handleShoot, isMuted, state.player.pos.y, state.player.charge]);
+  }, [isStarted, state.isGameOver, state.isPaused, isPortrait, isMuted, state.player.pos.y, state.player.charge]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden font-sans select-none">
@@ -332,7 +325,7 @@ export default function App() {
 
               <button 
                 onClick={startNewGame}
-                className="w-full py-4 md:py-5 bg-apple-accent text-white rounded-xl md:rounded-2xl font-bold text-base md:text-lg apple-shadow hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 md:py-5 bg-apple-accent rounded-xl md:rounded-2xl font-bold text-base md:text-lg apple-shadow hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2"
               >
                 <Play size={18} fill="currentColor" />
                 Start Duel
