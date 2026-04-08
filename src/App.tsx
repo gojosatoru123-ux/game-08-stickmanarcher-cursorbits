@@ -16,6 +16,13 @@ export default function App() {
   const lastTimeRef = useRef<number>(0);
 
   const startNewGame = () => {
+    const doc = document.documentElement;
+  if (doc.requestFullscreen) {
+    doc.requestFullscreen();
+  } else if ((doc as any).webkitRequestFullscreen) {
+    // This is the specific one for iOS Safari
+    (doc as any).webkitRequestFullscreen();
+  }
     setState(createInitialState());
     setIsStarted(true);
     lastTimeRef.current = performance.now();
@@ -306,21 +313,6 @@ export default function App() {
               <div className="space-y-1 md:space-y-2">
                 <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-900">Arrow Master</h1>
                 <p className="text-xs md:text-base text-gray-500">Stickman Duel: Master the bow.</p>
-              </div>
-              
-              <div className="hidden md:block w-full space-y-2 md:space-y-4 text-[10px] md:text-sm text-gray-400">
-                <div className="flex justify-between border-b border-gray-100 pb-1 md:pb-2">
-                  <span>Mouse / Touch</span>
-                  <span className="text-gray-600">Drag & Release</span>
-                </div>
-                <div className="hidden md:flex justify-between border-b border-gray-100 pb-2">
-                  <span>Aim</span>
-                  <span className="text-gray-600">WASD / Arrows</span>
-                </div>
-                <div className="hidden md:flex justify-between">
-                  <span>Shoot</span>
-                  <span className="text-gray-600">Space / Enter</span>
-                </div>
               </div>
 
               <button 
